@@ -62,10 +62,6 @@ class GameViewModel: ViewModel() {
                 sprites.remove(note)
                 actionItems.remove(note as ActionItem)
                 updatables.remove(note as Updatable)
-                Log.d("TAG", "Sprites: " + sprites.size)
-                Log.d("TAG", "Actions: " + actionItems.size)
-                Log.d("TAG", "Updatables: " + updatables.size)
-
             }
         }
     }

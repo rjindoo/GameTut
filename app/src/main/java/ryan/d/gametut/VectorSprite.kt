@@ -15,9 +15,7 @@ class VectorSprite(private val gameViewModel: GameViewModel): Sprite {
         paint3.color = Color.rgb(0,0, 255)
     }
 
-    override fun getY(): Float {
-        return 0.5f
-    }
+    override fun getY(): Float { return -1f }
 
     override fun draw(canvas: Canvas) {
         val x1 = gameViewModel.x1.value

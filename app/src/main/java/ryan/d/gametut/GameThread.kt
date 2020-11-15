@@ -2,8 +2,10 @@ package ryan.d.gametut
 
 import android.content.res.Resources
 import android.graphics.Canvas
+import android.util.Log
 import android.view.SurfaceHolder
 import java.lang.Exception
+import kotlin.random.Random
 
 class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView: GameView): Thread() {
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels.toFloat()
@@ -15,7 +17,7 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
         gameViewModel = model
     }
 
-    private var tick = 100
+    private var tick = Random.nextInt(0,200)
     override fun run() {
         var startTime = 0L
         val targetTime = 1000L / targetFPS
@@ -43,20 +45,20 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
             val timeMillis = (System.nanoTime() - startTime) / 1000000L
             val waitTime = targetTime - timeMillis
 
-            --tick
+            tick = Random.nextInt(0,200)
+            if(tick == 66) {
+                gameViewModel.newPurpleNote(gameView.resources)
+            }
+            else if(tick == 132) {
+                gameViewModel.newBlueNote(gameView.resources)
+            }
+            else if(tick == 180) {
+                gameViewModel.newGoldNote(gameView.resources)
+            }
+
             if(waitTime > 0L) {
                 try {
                     sleep(waitTime)
-                    if(tick <= 0) {
-                        gameViewModel.newPurpleNote(gameView.resources)
-                        tick = 100
-                    }
-                    if(tick == 50) {
-                        gameViewModel.newBlueNote(gameView.resources)
-                    }
-                    if(tick == 70) {
-                        gameViewModel.newGoldNote(gameView.resources)
-                    }
                 } catch (e: Exception) {}
             }
         }
@@ -67,11 +69,18 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
     }
 
     fun doClick(x: Int, y: Int): Boolean {
-        return gameViewModel.doClick(x, y)
+        /* Check that User Click is in note click zone*/
+        if (y < screenHeight && y > screenHeight*0.9) {
+            Log.d("TAG", "CLICKED (" + x + "," + y + ")")
+            return gameViewModel.doClick(x, y)
+        }
+        else{
+            return false
+        }
     }
 
     fun updateGame() {
-        gameViewModel.checkNotes()
         gameViewModel.update()
+        gameViewModel.checkNotes()
     }
 }
